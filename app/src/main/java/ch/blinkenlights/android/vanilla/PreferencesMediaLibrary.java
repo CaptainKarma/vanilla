@@ -221,7 +221,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		switch (item.getItemId()) {
 		case MENU_DUMP_DB:
 			final Context context = getActivity();
-			final String path = Environment.getExternalStorageDirectory().getPath() + "/dbdump-" + context.getPackageName() + ".sqlite";
+//  Fix for depreciated getExternalStorageDirectory
+//  Gets dropped into \Phone\Android\data\ch.blinkenlights.android.vanilla\files\Download
+			final String path = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/dbdump-" + context.getPackageName() + ".sqlite";
+///			final String path = Environment.getExternalStorageDirectory().getPath() + "/dbdump-" + context.getPackageName() + ".sqlite";
 			final String msg = getString(R.string.dump_database_result, path);
 
 			MediaLibrary.createDebugDump(context, path);
