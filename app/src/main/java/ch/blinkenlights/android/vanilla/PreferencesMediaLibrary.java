@@ -224,9 +224,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 //  Fix for depreciated getExternalStorageDirectory
 //  Gets dropped into \Phone\Android\data\ch.blinkenlights.android.vanilla\files\Download
 			final String path = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/dbdump-" + context.getPackageName() + ".sqlite";
-///			final String path = Environment.getExternalStorageDirectory().getPath() + "/dbdump-" + context.getPackageName() + ".sqlite";
 			final String msg = getString(R.string.dump_database_result, path);
-
 			MediaLibrary.createDebugDump(context, path);
 			Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 			break;

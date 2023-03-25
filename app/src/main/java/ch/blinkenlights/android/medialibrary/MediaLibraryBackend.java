@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
+import android.os.Environment;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -39,7 +40,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * on-disk file to store the database
 	 */
-	static final String DATABASE_NAME = "media-library.db";
+	static final String DATABASE_NAME = "vanilla-media-library.db";
 	/**
 	 * The magic mtime to use for songs which are in PENDING_DELETION state.
 	 * This is NOT 0 as the mtime is always expected to be > 0 for existing rows
@@ -68,7 +69,9 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	* @param context the context to use
 	*/
 	MediaLibraryBackend(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		super(context,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME, null, DATABASE_VERSION);
+		final String my_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME;
+		Log.i("VanillaMusic", "Database here;" + my_path);
 	}
 
 	/**
@@ -239,7 +242,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 
 		if (selection != null) {
 			if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS.equals(table)) {
-				// artist matches in the song-view are costy: try to give sqlite a hint
+				// artist matches in the song-view are costly: try to give sqlite a hint
 				String[] contributorMatch = extractVirtualColumn(selection);
 				if (contributorMatch != null) {
 					selection = contributorMatch[0];

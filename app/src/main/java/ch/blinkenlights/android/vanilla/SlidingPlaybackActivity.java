@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateUtils;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -103,6 +104,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 
 	@Override
 	protected void onSongChange(Song song) {
+		Log.i("VanillaMusic", "SlidingPlaybackActivity;onSongChange:" + song );
 		setDuration(song == null ? 0 : song.duration);
 		updateElapsedTime();
 		super.onSongChange(song);

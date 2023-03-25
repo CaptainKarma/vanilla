@@ -48,6 +48,7 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -1353,8 +1354,50 @@ public final class PlaybackService extends Service
 		return song;
 	}
 
+	// Pause for SD Card mounting on Android Headunit
+	public void awaitExternalStorageInitialization() {
+		boolean mExternalStorageAvailable = false;
+		boolean mExternalStorageWriteable = false;
+		int count = 0;
+
+		do {
+			String state = Environment.getExternalStorageState();
+			if(count > 0) {
+				try {
+					showToast(R.string.standby, Toast.LENGTH_SHORT);
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					Log.e("VanillaMusic", e.getMessage(), e);
+				}
+			}
+			// First run lands here
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				// We can read and write the media
+				mExternalStorageAvailable = mExternalStorageWriteable = true;
+			} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+				// We can only read the media
+				mExternalStorageAvailable = true;
+				mExternalStorageWriteable = false;
+			} else {
+				// Something else is wrong. It may be one of many other states,
+				// but all we need
+				// to know is we can neither read nor write
+				mExternalStorageAvailable = mExternalStorageWriteable = false;
+			}
+			count++;
+		} while ((!mExternalStorageAvailable) && (!mExternalStorageWriteable) && (count < 5));
+		if(!mExternalStorageWriteable) {
+		 	Log.e("VanillaMusic", "External storage device not ready");
+		    showToast(R.string.not_working, Toast.LENGTH_SHORT);
+		}
+	}
+
 	private void processSong(Song song)
 	{
+		// Check external SDCard is mounted or wait
+		// This stops error messages on the display of the Android Headunit
+		//
+		awaitExternalStorageInitialization();
 		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
 		boolean playing = (mState & FLAG_PLAYING) != 0;
 
@@ -1364,7 +1407,7 @@ public final class PlaybackService extends Service
 
 			if(mPreparedMediaPlayer.isPlaying()) {
 				// The prepared media player is playing as the previous song
-				// reched its end 'naturally' (-> gapless)
+				// reached its end 'naturally' (-> gapless)
 				// We can now swap mPreparedMediaPlayer and mMediaPlayer
 				VanillaMediaPlayer tmpPlayer = mMediaPlayer;
 				mMediaPlayer = mPreparedMediaPlayer;

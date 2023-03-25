@@ -235,7 +235,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				hideMessageOverlay();
 			}
 		}
-
 		if (mQueuePosView != null)
 			updateQueuePosition();
 	}

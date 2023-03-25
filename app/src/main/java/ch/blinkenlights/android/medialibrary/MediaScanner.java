@@ -23,7 +23,6 @@ import ch.blinkenlights.android.vanilla.NotificationHelper;
 import android.app.Notification;
 import android.content.Context;
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.ContentObserver;
 import android.util.Log;
@@ -259,7 +258,7 @@ public class MediaScanner implements Handler.Callback {
 				// the message queue size.
 				long now = SystemClock.uptimeMillis();
 				if (now >= mNextProgressReportAt) {
-					mNextProgressReportAt = now + 80;
+					mNextProgressReportAt = now + 80;   // Observation notificationservice package enqueue rate shedding
 					MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, true);
 					updateNotification(true);
 				}
@@ -343,7 +342,7 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
-	 * Checks the state of the native media db to deceide if we are going to
+	 * Checks the state of the native media db to decide if we are going to
 	 * check for deleted or new/modified items
 	 */
 	private void guessQuickScanPlan() {

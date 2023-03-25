@@ -21,10 +21,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<string name="app_name">Vanilla Music</string>
+	<string name="app_name">Vanilla ICE</string>
 	<string name="ok">OK</string>
 	<string name="cancel">Cancel</string>
-
+	<string name="standby">Storage not ready... Standby</string>
+	<string name="not_working">Storage not Working...</string>
 	<!-- Playback Activity (main screen) -->
 	<string name="no_songs">No tracks found on your device.</string>
 	<string name="empty_queue">No tracks selected. Pick some from the library or enter random mode by tapping this message.</string>

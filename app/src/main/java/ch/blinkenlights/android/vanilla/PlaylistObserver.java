@@ -25,7 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
+import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -113,14 +113,14 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 
 
 	public PlaylistObserver(Context context, String folder, int mode, boolean exportRelativePaths) {
-		super(context, "playlist_observer.db", null, 1 /* version */);
+		super(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/vanilla-playlist_observer.db", null, 1 /* version */);
 		mContext = context;
 		mSyncMode = mode;
 		mPlaylists = new File(folder);
 		mExportRelativePaths = exportRelativePaths;
 
 		// Launch new thread for background execution
-		mHandlerThread= new HandlerThread("PlaylisObserverHandler", Process.THREAD_PRIORITY_LOWEST);
+		mHandlerThread= new HandlerThread("PlaylistObserverHandler", Process.THREAD_PRIORITY_LOWEST);
 		mHandlerThread.start();
 		mHandler = new Handler(mHandlerThread.getLooper(), this);
 
