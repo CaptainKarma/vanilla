@@ -25,7 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
-
+import android.media.AudioAttributes;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -45,6 +45,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioDeviceInfo;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -58,7 +59,6 @@ import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import java.lang.Math;
@@ -658,8 +658,13 @@ public final class PlaybackService extends Service
 	 * Returns a new MediaPlayer object
 	 */
 	private VanillaMediaPlayer getNewMediaPlayer() {
+		AudioAttributes audioAttribute = new AudioAttributes.Builder()
+				.setUsage(AudioAttributes.USAGE_MEDIA)
+				.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+				.build();
 		VanillaMediaPlayer mp = new VanillaMediaPlayer(this);
-		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		mp.setAudioAttributes(audioAttribute);
+//		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mp.setOnCompletionListener(this);
 		mp.setOnErrorListener(this);
 		return mp;
@@ -1032,11 +1037,35 @@ public final class PlaybackService extends Service
 
 				// Update the notification with the current song information.
 				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
-
-				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-					unsetFlag(FLAG_PLAYING);
+				// Request the AudioFocus for newer API
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					final int m_result = mAudioManager.requestAudioFocus(new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+							.setAudioAttributes(
+									new AudioAttributes.Builder()
+											.setUsage(AudioAttributes.USAGE_MEDIA)
+											.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+											.build()
+							)
+							.setAcceptsDelayedFocusGain(true)
+							.setOnAudioFocusChangeListener(this).build()
+					);
+					if (m_result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+						unsetFlag(FLAG_PLAYING);
+					}
+				} else {
+					final int m_result = mAudioManager.requestAudioFocus(this,
+							AudioManager.STREAM_MUSIC,
+							AudioManager.AUDIOFOCUS_GAIN);
+					if (m_result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+						unsetFlag(FLAG_PLAYING);
+					}
 				}
+				// Legacy Code - Start
+//				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+//				if (m_result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+//					unsetFlag(FLAG_PLAYING);
+//				}
+				// Legacy Code - End
 
 				mHandler.removeMessages(MSG_ENTER_SLEEP_STATE);
 				try {
@@ -1563,7 +1592,7 @@ public final class PlaybackService extends Service
 	 */
 	private static final int MSG_FADE_OUT = 7;
 	/**
-	 * If arg1 is 0, calls {@link PlaybackService#playPause()}.
+	 * If arg1 is 0, calls {@link PlaybackService#playPause}.
 	 * Otherwise, calls {@link PlaybackService#setCurrentSong(int)} with arg1.
 	 */
 	private static final int MSG_CALL_GO = 8;
@@ -2044,8 +2073,11 @@ public final class PlaybackService extends Service
 	 *
 	 * @return The loaded value for mState.
 	 */
+	// TODO: Throws an error if SD Card not ready and tries to play
 	public int loadState()
 	{
+		awaitExternalStorageInitialization();   // Do SD Card Ready Check
+
 		int state = 0;
 
 		try {

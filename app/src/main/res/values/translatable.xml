@@ -126,9 +126,10 @@ THE SOFTWARE.
 	<string name="deleted_item">\'%s\' deleted.</string>
 	<string name="delete_item">Delete \'%s\'?</string>
 	<string name="delete_file">Delete file \'%s\'?</string>
-
+    // TODO: strings //
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
+	<string name="albums_new">New Albums</string>
 	<string name="albumartists">Album Artists</string>
 	<string name="composers">Composers</string>
 	<string name="songs">Tracks</string>

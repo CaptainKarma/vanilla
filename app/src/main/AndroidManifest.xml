@@ -23,9 +23,11 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="Vanilla ICE 0.3"
-	android:versionCode="3"
+	android:versionName="Vanilla ICE 0.4"
+	android:versionCode="4"
 	android:installLocation="auto">
+	<uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -243,8 +245,6 @@ THE SOFTWARE.
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-
-
 
 		<meta-data
 			android:name="com.google.android.backup.api_key"
