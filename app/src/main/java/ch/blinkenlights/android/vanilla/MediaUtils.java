@@ -644,7 +644,7 @@ public class MediaUtils {
 				cursor.close();
 			}
 		} catch (SecurityException e) {
-			Log.e("VanillaMusic", "Wowies: No permission to read EXTERNAL_CONTENT_URI for song "+song.path+": "+e);
+			Log.e("VanillaICE", "Wowies: No permission to read EXTERNAL_CONTENT_URI for song "+song.path+": "+e);
 		}
 		return result;
 	}

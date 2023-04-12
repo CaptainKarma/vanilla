@@ -287,7 +287,7 @@ public class MediaScanner implements Handler.Callback {
 			if (step == null) {
 				mHandler.sendEmptyMessage(MSG_SCAN_FINISHED);
 			} else {
-				Log.v("VanillaMusic", "xxx --- starting scan of type "+step.msg);
+				Log.v("VanillaICE", "xxx --- starting scan of type "+step.msg);
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, step.msg, 0, step.arg));
 			}
 		}
@@ -353,7 +353,7 @@ public class MediaScanner implements Handler.Callback {
 		try {
 			cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
 		} catch (SecurityException e) {
-			Log.e("VanillaMusic", "rpcObserveRemoval query failed: "+e);
+			Log.e("VanillaICE", "rpcObserveRemoval query failed: "+e);
 		}
 
 		if (cursor == null)
@@ -394,7 +394,7 @@ public class MediaScanner implements Handler.Callback {
 			try {
 				cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, sort);
 			} catch(SecurityException e) {
-				Log.e("VanillaMusic", "rpcNativeVerify failed: "+e);
+				Log.e("VanillaICE", "rpcNativeVerify failed: "+e);
 			}
 		}
 
@@ -412,7 +412,7 @@ public class MediaScanner implements Handler.Callback {
 		} else {
 			cursor.close();
 			setNativeLastMtime(mtime);
-			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
+			Log.v("VanillaICE", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
 		}
 	}
 
@@ -654,7 +654,7 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} // end if (mustInsert)
 
-		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
+		Log.v("VanillaICE", "MediaScanner: inserted "+path);
 		return hasChanged;
 	}
 

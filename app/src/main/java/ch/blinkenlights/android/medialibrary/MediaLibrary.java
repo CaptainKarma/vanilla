@@ -138,7 +138,7 @@ public class MediaLibrary  {
 			try (ObjectInputStream ois = new ObjectInputStream(context.openFileInput(PREFERENCES_FILE))) {
 				prefs = (MediaLibrary.Preferences)ois.readObject();
 			} catch (Exception e) {
-				Log.w("VanillaMusic", "Returning default media-library preferences due to error: "+ e);
+				Log.w("VanillaICE", "Returning default media-library preferences due to error: "+ e);
 			}
 
 			if (prefs == null) {
@@ -243,7 +243,7 @@ public class MediaLibrary  {
 		try (ObjectOutputStream oos = new ObjectOutputStream(context.openFileOutput(PREFERENCES_FILE, 0))) {
 			oos.writeObject(prefs);
 		} catch (Exception e) {
-			Log.w("VanillaMusic", "Failed to store media preferences: " + e);
+			Log.w("VanillaICE", "Failed to store media preferences: " + e);
 		}
 
 		sPreferences = prefs;
@@ -309,7 +309,7 @@ public class MediaLibrary  {
 				}
 			}
 		} catch (Exception e) {
-			Log.v("VanillaMusic", "Debug dump failed: "+e);
+			Log.v("VanillaICE", "Debug dump failed: "+e);
 		}
 	}
 

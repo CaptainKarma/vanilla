@@ -196,7 +196,7 @@ public class FileUtils {
 					canDispatch = true;
 				}
 			} catch (URISyntaxException e) {
-				Log.e("VanillaMusic", "failed to encode "+path+": "+e);
+				Log.e("VanillaICE", "failed to encode "+path+": "+e);
 			}
 		}
 		return canDispatch;

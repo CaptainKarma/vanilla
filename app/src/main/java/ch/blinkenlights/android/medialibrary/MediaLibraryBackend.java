@@ -71,7 +71,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	MediaLibraryBackend(Context context) {
 		super(context,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME, null, DATABASE_VERSION);
 		final String my_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME;
-		Log.i("VanillaMusic", "Database here;" + my_path);
+		Log.i("VanillaICE", "Database here;" + my_path);
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	Cursor query (boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 
 		if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE.equals(table)) {
-			Log.v("VanillaMusic", "+++ warning : using HUGE table in genquery!");
+			Log.v("VanillaICE", "+++ warning : using HUGE table in genquery!");
 		}
 
 		if (selection != null) {
@@ -294,13 +294,13 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 				if (table.equals(MediaLibrary.VIEW_ALBUMARTISTS)) {
 					selection += MediaLibrary.ContributorColumns.ALBUMARTIST_ID+" IN ("+
 						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ALBUMARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
-					Log.v("VanillaMusic", "+++ warning: huge genrequery for albumartist!");
+					Log.v("VanillaICE", "+++ warning: huge genrequery for albumartist!");
 				}
 
 				if (table.equals(MediaLibrary.VIEW_COMPOSERS)) {
 					selection += MediaLibrary.ContributorColumns.COMPOSER_ID+" IN ("+
 						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.COMPOSER_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
-					Log.v("VanillaMusic", "+++ warning: huge genrequery composer!");
+					Log.v("VanillaICE", "+++ warning: huge genrequery composer!");
 				}
 
 			}

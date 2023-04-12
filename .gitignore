@@ -40,3 +40,4 @@ out
 
 # Visual Studio 2015 cache/options directory
 .vs/
+app/src/main/java/ch/blinkenlights/android/plugin/ThirdParty.java

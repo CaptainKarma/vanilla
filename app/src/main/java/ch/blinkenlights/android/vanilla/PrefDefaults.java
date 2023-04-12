@@ -82,4 +82,8 @@ public class PrefDefaults {
 	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
 	public static final boolean DISABLE_GAPLESS_PLAYBACK = false;
+	public static final boolean TP_NUBERU_ENABLE = false;
+	public static final String TP_ACCOUNT_ID_DEFAULT = "";
+	public static final String TP_DEVICE_ID_DEFAULT = "";
+	public static final String TP_EMAIL_ADDRESS_DEFAULT = "";
 }

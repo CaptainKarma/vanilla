@@ -26,6 +26,8 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
 import android.media.AudioAttributes;
+import ch.blinkenlights.android.plugin.ThirdPartyPlugins;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -61,6 +63,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
+import com.mobeta.android.dslv.ConnectivityManagerUtils;
 import java.lang.Math;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -83,6 +86,7 @@ public final class PlaybackService extends Service
 			 , SensorEventListener
 			 , AudioManager.OnAudioFocusChangeListener
 {
+	public static final String TAG="MahmoudOsman";
 	/**
 	 * Name of the state file.
 	 */
@@ -813,7 +817,7 @@ public final class PlaybackService extends Service
 			doGapless = true;
 		}
 		else {
-			Log.d("VanillaMusic", "Must not create new media player object");
+			Log.d("VanillaICE", "Must not create new media player object");
 		}
 
 		if(doGapless == true) {
@@ -831,7 +835,7 @@ public final class PlaybackService extends Service
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
 			} catch (IOException | IllegalArgumentException e) {
-				Log.e("VanillaMusic", "Exception while preparing gapless media player: " + e);
+				Log.e("VanillaICE", "Exception while preparing gapless media player: " + e);
 				mMediaPlayer.setNextMediaPlayer(null);
 				mPreparedMediaPlayer.reset();
 			}
@@ -988,7 +992,7 @@ public final class PlaybackService extends Service
 		boolean result = true;
 		AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
 		for (AudioDeviceInfo device: devices) {
-			Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
+			Log.v("VanillaICE", "AudioDeviceInfo type = " + device.getType());
 			if (Arrays.asList(headsetTypes).contains(device.getType())) {
 				result = false;
 				break;
@@ -1384,19 +1388,29 @@ public final class PlaybackService extends Service
 	}
 
 	// Pause for SD Card mounting on Android Headunit
-	public void awaitExternalStorageInitialization() {
+	public void check_file_exists(String song) {
 		boolean mExternalStorageAvailable = false;
 		boolean mExternalStorageWriteable = false;
+		boolean mFile = false;
 		int count = 0;
+
+		Log.d("VanillaICE", "In ExternalStorageCheck with" + song);
+
+		int position = song.indexOf('/'); // find the filepath and name
+		String cut_song = song.substring(position);
+		if (position == -1) {
+			cut_song = song;		// Failed to find / so bailout though will likely break something
+		}
+		Log.d("VanillaICE", "In ExternalStorageCheck with;" + cut_song);
 
 		do {
 			String state = Environment.getExternalStorageState();
 			if(count > 0) {
 				try {
 					showToast(R.string.standby, Toast.LENGTH_SHORT);
-					Thread.sleep(5000);
+					Thread.sleep(3000);
 				} catch (InterruptedException e) {
-					Log.e("VanillaMusic", e.getMessage(), e);
+					Log.e("VanillaICE", e.getMessage(), e);
 				}
 			}
 			// First run lands here
@@ -1413,24 +1427,32 @@ public final class PlaybackService extends Service
 				// to know is we can neither read nor write
 				mExternalStorageAvailable = mExternalStorageWriteable = false;
 			}
+			File file = new File(cut_song);
+			if(file.exists())
+			{
+				mFile = true;
+			} else {
+				mFile = false;
+			}
 			count++;
-		} while ((!mExternalStorageAvailable) && (!mExternalStorageWriteable) && (count < 5));
+		} while ((!mExternalStorageAvailable) && (!mExternalStorageWriteable) && (!mFile) && (count < 5));
 		if(!mExternalStorageWriteable) {
-		 	Log.e("VanillaMusic", "External storage device not ready");
+		 	Log.e("VanillaICE", "External storage device not ready");
 		    showToast(R.string.not_working, Toast.LENGTH_SHORT);
 		}
 	}
 
 	private void processSong(Song song)
 	{
-		// Check external SDCard is mounted or wait
-		// This stops error messages on the display of the Android Headunit
-		//
-		awaitExternalStorageInitialization();
 		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
 		boolean playing = (mState & FLAG_PLAYING) != 0;
 
 		try {
+			// Check external SDCard is mounted or wait
+			// This stops error messages on the display of the Android Headunit
+			//
+			check_file_exists(song.toString());
+
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
 
@@ -1473,7 +1495,7 @@ public final class PlaybackService extends Service
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
 			showToast(mErrorMessage, Toast.LENGTH_LONG);
-			Log.e("VanillaMusic", "IOException", e);
+			Log.e("VanillaICE", "IOException", e);
 
 			/* Automatically advance to next song IF we are currently playing or already did skip something
 			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
@@ -1511,7 +1533,7 @@ public final class PlaybackService extends Service
 	@Override
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
-		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
+		Log.e("VanillaICE", "MediaPlayer error: " + what + ' ' + extra);
 
 		return true;
 	}
@@ -1988,7 +2010,7 @@ public final class PlaybackService extends Service
 		mHandler.removeMessages(MSG_SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(MSG_SAVE_STATE, SAVE_STATE_DELAY);
 
-		// Trigger a gappless update for the new timeline
+		// Trigger a gapless update for the new timeline
 		// This might get canceled if setCurrentSong() also fired a call
 		// to processSong();
 		mHandler.removeMessages(MSG_GAPLESS_UPDATE);
@@ -1997,7 +2019,22 @@ public final class PlaybackService extends Service
 		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onTimelineChanged();
+	}
 
+	public void requestNewSong(){
+		if (SharedPrefHelper.getSettings(this).getBoolean(PrefKeys.TP_NUBERU_ENABLE_KEY, PrefDefaults.TP_NUBERU_ENABLE)){
+			PlaybackService service = PlaybackService.get(PlaybackService.this);
+			boolean isEndOfQueue=(service.mTimeline.isEndOfQueue());
+			if (ConnectivityManagerUtils.isInternetAvailable(PlaybackService.this) && isEndOfQueue)
+			{
+				ThirdPartyPlugins thirdPartyPlugins= new ThirdPartyPlugins(PlaybackService.this);
+				try {
+					thirdPartyPlugins.request_track_from_seed_track(service.mCurrentSong.path);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
@@ -2076,11 +2113,12 @@ public final class PlaybackService extends Service
 	// TODO: Throws an error if SD Card not ready and tries to play
 	public int loadState()
 	{
-		awaitExternalStorageInitialization();   // Do SD Card Ready Check
 
 		int state = 0;
 
 		try {
+//			awaitExternalStorageInitialization(STATE_FILE);   // Do SD Card Ready Check
+
 			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
 
 			if (in.readLong() == STATE_FILE_MAGIC && in.readInt() == STATE_VERSION) {
@@ -2090,14 +2128,12 @@ public final class PlaybackService extends Service
 				state |= mTimeline.getShuffleMode() << SHIFT_SHUFFLE;
 				state |= mTimeline.getFinishAction() << SHIFT_FINISH;
 			}
-
 			in.close();
 		} catch (EOFException e) {
-			Log.w("VanillaMusic", "Failed to load state", e);
+			Log.w("VanillaICE", "Failed to load state", e);
 		} catch (IOException e) {
-			Log.w("VanillaMusic", "Failed to load state", e);
+			Log.w("VanillaICE", "Failed to load state", e);
 		}
-
 		return state;
 	}
 
@@ -2119,7 +2155,9 @@ public final class PlaybackService extends Service
 			mTimeline.writeState(out);
 			out.close();
 		} catch (IOException e) {
-			Log.w("VanillaMusic", "Failed to save state", e);
+			Log.w("VanillaICE", "Failed to save state", e);
+		}finally {
+			requestNewSong();
 		}
 	}
 
@@ -2163,7 +2201,7 @@ public final class PlaybackService extends Service
 			return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		}
 		default:
-			Log.w("VanillaMusic", "Unknown value for notification_action. Defaulting to 0.");
+			Log.w("VanillaICE", "Unknown value for notification_action. Defaulting to 0.");
 			// fall through
 		case NOT_ACTION_MAIN_ACTIVITY: {
 			Intent intent = new Intent(this, LibraryActivity.class);
@@ -2234,7 +2272,7 @@ public final class PlaybackService extends Service
 
 	public void onAudioFocusChange(int type)
 	{
-		Log.d("VanillaMusic", "audio focus change: " + type);
+		Log.d("VanillaICE", "audio focus change: " + type);
 
 		// Rewrite permanent focus loss into can_duck
 		if (mIgnoreAudioFocusLoss) {

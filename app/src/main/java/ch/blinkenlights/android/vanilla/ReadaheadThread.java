@@ -96,7 +96,7 @@ class ReadaheadThread implements Handler.Callback {
 					try {
 						mInputStream.close();
 					} catch (IOException e) {
-						Log.e("VanillaMusic", "Failed to close file: "+e);
+						Log.e("VanillaICE", "Failed to close file: "+e);
 					}
 					mPath = null;
 					mReadDelay = 0;
@@ -114,9 +114,9 @@ class ReadaheadThread implements Handler.Callback {
 							mReadDelay = (long)(0.90 * song.duration / requiredReads); // run ~10% ahead
 						}
 					} catch (FileNotFoundException e) {
-						Log.e("VanillaMusic", "Failed to song "+ song +": "+e);
+						Log.e("VanillaICE", "Failed to song "+ song +": "+e);
 					} catch (IOException e) {
-						Log.e("VanillaMusic", "IO Exception on "+ song +": "+e);
+						Log.e("VanillaICE", "IO Exception on "+ song +": "+e);
 					}
 				}
 
@@ -135,7 +135,7 @@ class ReadaheadThread implements Handler.Callback {
 				if (bytesRead >= 0) {
 					mHandler.sendEmptyMessageDelayed(MSG_READ_CHUNK, mReadDelay);
 				} else {
-					Log.d("VanillaMusic", "Readahead for "+mPath+" finished");
+					Log.d("VanillaICE", "Readahead for "+mPath+" finished");
 				}
 			}
 			default: {

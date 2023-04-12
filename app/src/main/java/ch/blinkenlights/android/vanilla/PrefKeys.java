@@ -79,4 +79,9 @@ public class PrefKeys {
 	public static final String PLAYLIST_EXPORT_RELATIVE_PATHS = "playlist_export_relative_paths";
 	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
 	public static final String DISABLE_GAPLESS_PLAYBACK = "disable_gapless_playback";
+	public static final String TP_NUBERU_ENABLE_KEY = "thirdparty_nuberu_enabled";
+	public static final String TP_ACCOUNT_ID_KEY = "thirdparty_nuberu_account_id";
+	public static final String TP_DEVICE_ID_KEY = "thirdparty_nuberu_device_id";
+	public static final String TP_EMAIL_ADDRESS_KEY = "thirdparty_nuberu_email_id";
+
 }

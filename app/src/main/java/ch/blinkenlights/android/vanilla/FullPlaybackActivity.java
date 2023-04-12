@@ -120,7 +120,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		switch (displayMode) {
 		default:
-			Log.w("VanillaMusic", "Invalid display mode given. Defaulting to widget mode.");
+			Log.w("VanillaICE", "Invalid display mode given. Defaulting to widget mode.");
 			// fall through
 		case DISPLAY_INFO_WIDGETS:
 			coverStyle = CoverBitmap.STYLE_NO_INFO;

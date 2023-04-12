@@ -39,7 +39,7 @@ public class MediaMigrations {
 			String name = cursor.getString(1);
 			String key = MediaLibrary.keyFor(name);
 
-			Log.v("VanillaMusic", "migrate_to_20180416 -> id="+id+", name="+name+" -> key = "+key);
+			Log.v("VanillaICE", "migrate_to_20180416 -> id="+id+", name="+name+" -> key = "+key);
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.PlaylistColumns._ID, id);
 			v.put(MediaLibrary.PlaylistColumns.NAME, name);

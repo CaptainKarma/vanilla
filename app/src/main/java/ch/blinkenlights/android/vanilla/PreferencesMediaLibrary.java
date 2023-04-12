@@ -25,6 +25,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -93,6 +94,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private CheckBox mForceBastpCheck;
 	/**
+	 * The original state of our media folders.
+	 */
+	private CheckBox mGuiOption;
+	/**
 	 * Set if we should start a full scan due to option changes
 	 */
 	private boolean mFullScanPending;
@@ -140,6 +145,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
 		mGroupAlbumsCheck = (CheckBox)view.findViewById(R.id.media_scan_group_albums);
+	//	mGuiOption = (CheckBox)view.findViewById(R.id.gui_option);
 		mForceBastpCheck = (CheckBox)view.findViewById(R.id.media_scan_force_bastp);
 
 		// Bind onClickListener to some elements
@@ -148,7 +154,6 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mEditButton.setOnClickListener(this);
 		mGroupAlbumsCheck.setOnClickListener(this);
 		mForceBastpCheck.setOnClickListener(this);
-		// Enable options menu.
 		setHasOptionsMenu(true);
 	}
 
@@ -205,6 +210,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				break;
 		}
 	}
+
 
 	private static final int MENU_DUMP_DB = 1;
 	private static final int MENU_FORCE_M3U_IMPORT = 2;

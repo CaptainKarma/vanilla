@@ -499,7 +499,7 @@ public class CoverCache {
 				}
 			} catch (Exception e) {
 				// no cover art found
-				Log.v("VanillaMusic", "Loading coverart for "+song+" failed with exception "+e);
+				Log.v("VanillaICE", "Loading coverart for "+song+" failed with exception "+e);
 			}
 			// failed!
 			return null;

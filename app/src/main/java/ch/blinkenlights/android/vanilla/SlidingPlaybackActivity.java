@@ -104,7 +104,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 
 	@Override
 	protected void onSongChange(Song song) {
-		Log.i("VanillaMusic", "SlidingPlaybackActivity;onSongChange:" + song );
+		Log.i("VanillaICE", "SlidingPlaybackActivity;onSongChange:" + song );
 		setDuration(song == null ? 0 : song.duration);
 		updateElapsedTime();
 		super.onSongChange(song);

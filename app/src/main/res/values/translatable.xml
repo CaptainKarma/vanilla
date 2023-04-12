@@ -394,6 +394,13 @@ THE SOFTWARE.
 	<string name="media_scan_preferences_change_message">Changing this option will start a full rescan of your library. Would you like to continue?</string>
 	<string name="folder_picker_spinner_desc">Status of Directory:</string>
 
+    <!-- third party settings -->
+	<string name="thirdparty_header">Third Party Plugins</string>
+	<string name="thirdparty_nuberu_option_enabled">Enable Nuberu</string>
+	<string name="thirdparty_nuberu_account_id">Account ID</string>
+	<string name="thirdparty_nuberu_device_id">Device ID</string>
+	<string name="thirdparty_nuberu_email_id">Account EMail Address</string>
+
 	<!-- Folder selector -->
 	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>
 	<string name="folder_include">Include</string>

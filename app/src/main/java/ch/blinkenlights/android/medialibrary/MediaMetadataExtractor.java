@@ -292,7 +292,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		if (!isEmpty())
 			throw new IllegalStateException("Expected to be called on a clean HashMap");
 
-		Log.v("VanillaMusic", "Extracting tags from "+path);
+		Log.v("VanillaICE", "Extracting tags from "+path);
 
 		HashMap bastpTags = (new Bastp()).getTags(path);
 		MediaMetadataRetriever mediaTags = new MediaMetadataRetriever();
@@ -304,12 +304,12 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				mediaTags.setDataSource(fis.getFD());
 				nativelyReadable = true;
 			} catch (Exception e) {
-				Log.v("VanillaMusic", "Error calling setDataSource for "+path+": "+e);
+				Log.v("VanillaICE", "Error calling setDataSource for "+path+": "+e);
 			}
 			fis.close();
 		} catch (Exception e) {
 			nativelyReadable = false;
-			Log.v("VanillaMusic", "Error creating fis for "+path+": "+e);
+			Log.v("VanillaICE", "Error creating fis for "+path+": "+e);
 		}
 
 		// Check if this is a usable audio file
@@ -320,7 +320,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 			try {
 				mediaTags.release();
 			} catch (IOException e) {
-				Log.v("VanillaMusic", "mediaTags.release() failed: " + e);
+				Log.v("VanillaICE", "mediaTags.release() failed: " + e);
 			}
 
 			return;
@@ -370,7 +370,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		try {
 			mediaTags.release();
 		} catch (IOException e) {
-			Log.v("VanillaMusic", "mediaTags.release() failed: " + e);
+			Log.v("VanillaICE", "mediaTags.release() failed: " + e);
 		}
 	}
 

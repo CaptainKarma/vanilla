@@ -50,6 +50,7 @@ import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -537,7 +538,8 @@ public class LibraryActivity
 				view.setText(txt);
 				view.setTextColor(Color.WHITE);
 				view.setLayoutParams(params);
-				view.setPaddingDIP(leftPadding, 2, 6, 2);
+
+				view.setPaddingDIP(leftPadding, 20, 6, 80);
 				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
 				view.setColors(colors[0], colors[1]);
@@ -551,7 +553,7 @@ public class LibraryActivity
 					end.setText("×");
 					end.setTextColor(0xFFB0B0B0);
 					end.setLayoutParams(params);
-					end.setPaddingDIP(0, 2, 0, 2);
+					end.setPaddingDIP(0, 20, 0, 80);
 					end.setArrowWidthDIP(arrowWidth);
 					end.setArrowPaddingDIP(ap);
 					end.setMinWidthDIP(arrowWidth+ap);
