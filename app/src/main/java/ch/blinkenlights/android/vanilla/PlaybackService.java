@@ -1394,16 +1394,14 @@ public final class PlaybackService extends Service
 		boolean mFile = false;
 		int count = 0;
 
-		Log.d("VanillaICE", "In ExternalStorageCheck with" + song);
+		// Write to Debug physical file
+		ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(PlaybackService.this);
+		thirdPartyPlugins.appendLog("check_file_exists with" + song);
+        //
 
-		int position = song.indexOf('/'); // find the filepath and name
-		String cut_song = song.substring(position);
-		if (position == -1) {
-			cut_song = song;		// Failed to find / so bailout though will likely break something
-		}
-		Log.d("VanillaICE", "In ExternalStorageCheck with;" + cut_song);
+			Log.d("VanillaICE", "check_file_exists with" + song);
 
-		do {
+		while (count++ < 5)  {
 			String state = Environment.getExternalStorageState();
 			if(count > 0) {
 				try {
@@ -1427,7 +1425,7 @@ public final class PlaybackService extends Service
 				// to know is we can neither read nor write
 				mExternalStorageAvailable = mExternalStorageWriteable = false;
 			}
-			File file = new File(cut_song);
+			File file = new File(song);
 			if(file.exists())
 			{
 				mFile = true;
@@ -1435,7 +1433,11 @@ public final class PlaybackService extends Service
 				mFile = false;
 			}
 			count++;
-		} while ((!mExternalStorageAvailable) && (!mExternalStorageWriteable) && (!mFile) && (count < 5));
+			if ((mExternalStorageAvailable == true && mExternalStorageWriteable == true && mFile == true)){
+				break;
+			}
+		}
+
 		if(!mExternalStorageWriteable) {
 		 	Log.e("VanillaICE", "External storage device not ready");
 		    showToast(R.string.not_working, Toast.LENGTH_SHORT);
@@ -1451,7 +1453,7 @@ public final class PlaybackService extends Service
 			// Check external SDCard is mounted or wait
 			// This stops error messages on the display of the Android Headunit
 			//
-			check_file_exists(song.toString());
+			check_file_exists(song.path);
 
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
@@ -1467,7 +1469,6 @@ public final class PlaybackService extends Service
 			else {
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
-
 
 			mMediaPlayerInitialized = true;
 			// Cancel any pending gapless updates and re-send them
@@ -2025,13 +2026,19 @@ public final class PlaybackService extends Service
 		if (SharedPrefHelper.getSettings(this).getBoolean(PrefKeys.TP_NUBERU_ENABLE_KEY, PrefDefaults.TP_NUBERU_ENABLE)){
 			PlaybackService service = PlaybackService.get(PlaybackService.this);
 			boolean isEndOfQueue=(service.mTimeline.isEndOfQueue());
-			if (ConnectivityManagerUtils.isInternetAvailable(PlaybackService.this) && isEndOfQueue)
-			{
-				ThirdPartyPlugins thirdPartyPlugins= new ThirdPartyPlugins(PlaybackService.this);
-				try {
-					thirdPartyPlugins.request_track_from_seed_track(service.mCurrentSong.path);
-				} catch (Exception e) {
-					e.printStackTrace();
+			if (isEndOfQueue) {
+				if (ConnectivityManagerUtils.isInternetAvailable(PlaybackService.this)) {
+					ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(PlaybackService.this);
+					try {
+						thirdPartyPlugins.request_track_from_seed_track(service.mCurrentSong.path);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
+                       //	Do song by genre
+					Log.d("VanillaICE", "Trying Ablum");
+					service.enqueueFromSong(service.mCurrentSong, MediaUtils.TYPE_ALBUM);
+					showToast("Offline Queuing Album", Toast.LENGTH_LONG);
 				}
 			}
 		}

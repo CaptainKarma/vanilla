@@ -4,6 +4,7 @@ import static ch.blinkenlights.android.plugin.ThirdParty.nuberu_url;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +19,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 import ch.blinkenlights.android.vanilla.FileUtils;
@@ -145,5 +149,37 @@ public class ThirdPartyPlugins {
 				DEFAULT_BACKOFF_MULTI));
 
 		requestQueue.add(jsonObjectRequest);
+	}
+
+	public void appendLog(String text)
+	{
+		final String log_output = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/vanillaICE.log";
+
+		File logFile = new File(log_output);
+		if (!logFile.exists())
+		{
+			try
+			{
+				logFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try
+		{
+			//BufferedWriter for performance, true to set append to file flag
+			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+			buf.append(text);
+			buf.newLine();
+			buf.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

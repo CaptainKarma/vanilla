@@ -1,6 +1,6 @@
 Vanilla ICE (Internal Combustion Engine/Edition)
 <h4>Forked from Vanilla Music</h4>
-=======================================
+
 Original Source;
 https://github.com/vanilla-music/vanilla/
 
