@@ -139,6 +139,10 @@ public class ThirdPartyPlugins {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				error.printStackTrace();
+				// Write to Debug physical file
+				ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(mContext);
+				thirdPartyPlugins.appendLog("VolleyErrorResponse: " + String.valueOf(error));
+				//
 				Log.d("VanillaICE", "VolleyErrored");
 				Log.d("VanillaICE", String.valueOf(error));
 			}

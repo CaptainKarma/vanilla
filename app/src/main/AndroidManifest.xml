@@ -22,12 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="ch.blinkenlights.android.vanilla"
-	android:versionName="Vanilla ICE 0.7"
-	android:versionCode="7"
+	android:versionName="Vanilla ICE 0.8"
+	android:versionCode="8"
 	android:installLocation="auto">
-	<uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />

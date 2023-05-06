@@ -1401,12 +1401,12 @@ public final class PlaybackService extends Service
 
 			Log.d("VanillaICE", "check_file_exists with" + song);
 
-		while (count++ < 5)  {
+		while (count < 10)  {
 			String state = Environment.getExternalStorageState();
 			if(count > 0) {
 				try {
 					showToast(R.string.standby, Toast.LENGTH_SHORT);
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					Log.e("VanillaICE", e.getMessage(), e);
 				}
@@ -1928,7 +1928,13 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
-		showToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
+		switch (query.mode) {
+			case SongTimeline.MODE_ENQUEUE:
+            break;
+
+			default:
+				showToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
+		}
 	}
 
 	/**
@@ -2035,8 +2041,12 @@ public final class PlaybackService extends Service
 						e.printStackTrace();
 					}
 				} else {
-                       //	Do song by genre
-					Log.d("VanillaICE", "Trying Ablum");
+					//	Fallback to Album
+					// Write to Debug physical file
+					ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(PlaybackService.this);
+					thirdPartyPlugins.appendLog("Fallback to Album");
+					//
+					Log.d("VanillaICE", "Adding Album");
 					service.enqueueFromSong(service.mCurrentSong, MediaUtils.TYPE_ALBUM);
 					showToast("Offline Queuing Album", Toast.LENGTH_LONG);
 				}
