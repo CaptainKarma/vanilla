@@ -53,6 +53,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import ch.blinkenlights.android.plugin.ThirdPartyPlugins;
+
 /**
  * Base activity for activities that contain playback controls. Handles
  * communication with the PlaybackService and response to state and song
@@ -222,7 +224,10 @@ public abstract class PlaybackActivity extends Activity
 			rewindCurrentSong();
 			break;
 		case R.id.end_action:
-			cycleFinishAction();
+			PlaybackService service = PlaybackService.get(this);
+			ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(service);
+			thirdPartyPlugins.send_downgrade_track();
+		//	cycleFinishAction();
 			break;
 		case R.id.shuffle:
 			cycleShuffle();

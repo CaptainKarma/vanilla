@@ -5,9 +5,9 @@ import static ch.blinkenlights.android.plugin.ThirdParty.nuberu_url;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.EditTextPreference;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +31,7 @@ import ch.blinkenlights.android.vanilla.PlaybackService;
 import ch.blinkenlights.android.vanilla.PrefDefaults;
 import ch.blinkenlights.android.vanilla.PrefKeys;
 import ch.blinkenlights.android.vanilla.QueryTask;
+import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.SharedPrefHelper;
 import ch.blinkenlights.android.vanilla.Song;
 import ch.blinkenlights.android.vanilla.SongTimeline;
@@ -154,6 +155,68 @@ public class ThirdPartyPlugins {
 
 		requestQueue.add(jsonObjectRequest);
 	}
+
+	// Send downgrade of track back to system
+	public void send_downgrade_track() {
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+		String acc = settings.getString(PrefKeys.TP_ACCOUNT_ID_KEY, PrefDefaults.TP_ACCOUNT_ID_DEFAULT);  // <- Pull from preferences/GUI
+		String device = settings.getString(PrefKeys.TP_DEVICE_ID_KEY, PrefDefaults.TP_DEVICE_ID_DEFAULT); // <- Pull from preferences/GUI
+		String email = settings.getString(PrefKeys.TP_EMAIL_ADDRESS_KEY, PrefDefaults.TP_EMAIL_ADDRESS_DEFAULT);    // <- Pull from preferences/GUI
+
+		long idempotency_key = System.currentTimeMillis() / 1000L;
+
+		PlaybackService service = PlaybackService.get(mContext);
+		String seed_track = service.mCurrentSong.path;
+
+		Log.d("VanillaICE", "## Downgrading Track:" + seed_track);
+
+		String postUrl = nuberu_url;
+		RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+
+		JSONObject postData = new JSONObject();
+		try {
+			postData.put("email", email);
+			postData.put("acc", acc);
+			postData.put("player", device);
+			postData.put("action", "track_update");
+			postData.put("current", seed_track);
+			postData.put("set_rating", "20");
+			postData.put("idempotency", idempotency_key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData, new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				Log.d("VanillaICE", "Response from Nuberu-START");
+				Log.d("VanillaICE", String.valueOf(response));
+				Log.d("VanillaICE", "Response from Nuberu-END");
+				final String idempotency_return;
+
+				Toast.makeText(mContext, R.string.thirdparty_nuberu_downgrade, Toast.LENGTH_SHORT).show();
+
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				error.printStackTrace();
+				// Write to Debug physical file
+				ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(mContext);
+				thirdPartyPlugins.appendLog("VolleyErrorResponse: " + String.valueOf(error));
+				//
+				Log.d("VanillaICE", "Volley Downgrade Errored");
+				Log.d("VanillaICE", String.valueOf(error));
+			}
+		});
+		jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+				DEFAULT_TIMEOUT_MS,
+				DEFAULT_MAX_RETRIES,
+				DEFAULT_BACKOFF_MULTI));
+
+		requestQueue.add(jsonObjectRequest);
+	}
+
 
 	public void appendLog(String text)
 	{

@@ -400,6 +400,7 @@ THE SOFTWARE.
 	<string name="thirdparty_nuberu_account_id">Account ID</string>
 	<string name="thirdparty_nuberu_device_id">Device ID</string>
 	<string name="thirdparty_nuberu_email_id">Account EMail Address</string>
+	<string name="thirdparty_nuberu_downgrade">Track Downgraded</string>
 
 	<!-- Folder selector -->
 	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>

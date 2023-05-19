@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import java.util.HashMap;

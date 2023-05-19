@@ -72,6 +72,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -349,7 +351,7 @@ public final class PlaybackService extends Service
 	private MediaSessionTracker mMediaSessionTracker;
 
 	SongTimeline mTimeline;
-	private Song mCurrentSong;
+	public Song mCurrentSong;
 
 	/**
 	 * Stores the saved position in the current song from saved state. Should
@@ -2037,9 +2039,68 @@ public final class PlaybackService extends Service
 					ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(PlaybackService.this);
 					try {
 						thirdPartyPlugins.request_track_from_seed_track(service.mCurrentSong.path);
-					} catch (Exception e) {
+						} catch (Exception e) {
 						e.printStackTrace();
 					}
+
+					// wait 30 seconds for a track to be added
+					// if there is no new track in the queue then something timed out and we are at risk
+					// of the music stopping, so try again to request a track
+					ExecutorService executor = Executors.newSingleThreadExecutor();
+					Handler handler = new Handler(Looper.getMainLooper());
+
+					executor.execute(() -> {
+						try {
+							Thread.sleep(30000);
+							boolean stillEndOfQueue=(service.mTimeline.isEndOfQueue());
+							if (stillEndOfQueue) {
+								showToast("Retrying...", Toast.LENGTH_LONG);
+								Log.d("VanillaICE", "## Waited and still no track added - calling again ##");
+								thirdPartyPlugins.appendLog("## Waited and still no track added - calling again ##");
+								thirdPartyPlugins.request_track_from_seed_track(service.mCurrentSong.path);
+
+								// if there is no new track in the queue then something timed out and we are at risk
+								// of the music stopping, so queue the album
+								// Note; Risk that could fire during track being skipped and no new track in the queue yet
+								// so this could cause strange issues but can't think of a better way for now
+
+								ExecutorService executor_fallback = Executors.newSingleThreadExecutor();
+								Handler handler_fallback = new Handler(Looper.getMainLooper());
+
+								executor_fallback.execute(() -> {
+									try {
+										Thread.sleep(30000);
+										boolean stillEndOfQueue_1=(service.mTimeline.isEndOfQueue());
+										if (stillEndOfQueue_1) {
+											//	Fallback to Album
+											// Write to Debug physical file
+											thirdPartyPlugins.appendLog("Retried and Offline Fallback to Album");
+											//
+											Log.d("VanillaICE", "Retried and Offline Fallback to Album");
+											service.enqueueFromSong(service.mCurrentSong, MediaUtils.TYPE_ALBUM);
+											showToast("Retried and Offline Fallback to Album", Toast.LENGTH_LONG);
+										}
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+									handler_fallback.post(() -> {
+										//UI Thread work here
+									});
+								});
+
+
+							}
+						} catch (InterruptedException e) {
+							throw new RuntimeException(e);
+						}
+						handler.post(() -> {
+							//UI Thread work here
+						});
+					});
+
+
+
+
 				} else {
 					//	Fallback to Album
 					// Write to Debug physical file
