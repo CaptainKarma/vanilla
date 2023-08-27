@@ -21,11 +21,17 @@ function show(n) {
 <body>
 <h1>Vanilla ICE</h1>
 <h2>Internal Combustion Engine/Edition</h2>
-<p><b>Version:</b> 0.8 - May 2023<br><br>
+<p><b>Version:</b> 1.1 - Aug 2023<br><br>
 <b>Forked from Vanilla Music:</b> <a href='https://vanilla-music.github.io/'>https://vanilla-music.github.io/</a><br>
 <br>
 <b>Changelog</b> [<a href='javascript:show("changelog")'>show</a>]
 <pre id='changelog'>
+<b>1.1</b>
+- <b>FIX</b> Fatal Exception: java.lang.RuntimeException - Unable to stop service
+- <b>FIX</b> PlaybackService.get - java.lang.IllegalStateException - Not allowed to start service Intent
+<b>0.9</b>
+- <b>ADD</b> Fallback to Album if offline
+- <b>ADD</b> Added Track downgrade functionality
 <b>0.8</b>
 - <b>FIX</b> Tweaks to SD Card wait periods to improve perceived performance
 - <b>CHG</b> Don't show Toast notifications for track enqueuing

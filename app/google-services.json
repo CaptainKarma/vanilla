@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "426787564754",
+    "project_id": "vanilla-ice-4acae",
+    "storage_bucket": "vanilla-ice-4acae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426787564754:android:2a82fdc1cefb9dd4aad10b",
+        "android_client_info": {
+          "package_name": "ch.blinkenlights.android.vanilla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "426787564754-eg9tdjousmui8a0u02lr48mdi7f06l34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATO1GNj35H_LHlfp6n52keLkYa8w8NjzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "426787564754-eg9tdjousmui8a0u02lr48mdi7f06l34.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

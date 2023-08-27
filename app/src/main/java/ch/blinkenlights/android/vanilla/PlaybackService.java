@@ -25,6 +25,8 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
+
+import android.content.ServiceConnection;
 import android.media.AudioAttributes;
 import ch.blinkenlights.android.plugin.ThirdPartyPlugins;
 
@@ -50,6 +52,7 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -62,6 +65,8 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import com.mobeta.android.dslv.ConnectivityManagerUtils;
 import java.lang.Math;
@@ -88,6 +93,17 @@ public final class PlaybackService extends Service
 			 , SensorEventListener
 			 , AudioManager.OnAudioFocusChangeListener
 {
+	private final IBinder mBinder = new LocalBinder();
+	public class LocalBinder extends Binder {
+		PlaybackService getService() {
+			return PlaybackService.this;
+		}
+	}
+	@Nullable
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
 	public static final String TAG="MahmoudOsman";
 	/**
 	 * Name of the state file.
@@ -677,6 +693,8 @@ public final class PlaybackService extends Service
 	}
 
 	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
+		ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(this);
+		thirdPartyPlugins.appendLog("== 679prepareMediaPlayer == " + path);
 		mp.setDataSource(path);
 		mp.prepare();
 		applyReplayGain(mp);
@@ -1801,11 +1819,11 @@ public final class PlaybackService extends Service
 		mHandler.sendEmptyMessage(MSG_BROADCAST_SEEK);
 	}
 
-	@Override
-	public IBinder onBind(Intent intents)
-	{
-		return null;
-	}
+//	@Override
+//	public IBinder onBind(Intent intents)
+//	{
+//		return null;
+//	}
 
 	@Override
 	public void activeSongReplaced(int delta, Song song)
@@ -2032,8 +2050,11 @@ public final class PlaybackService extends Service
 
 	public void requestNewSong(){
 		if (SharedPrefHelper.getSettings(this).getBoolean(PrefKeys.TP_NUBERU_ENABLE_KEY, PrefDefaults.TP_NUBERU_ENABLE)){
+			boolean isEndOfQueue = false;
 			PlaybackService service = PlaybackService.get(PlaybackService.this);
-			boolean isEndOfQueue=(service.mTimeline.isEndOfQueue());
+			if (service != null && service.mTimeline != null) {
+				isEndOfQueue = (service.mTimeline.isEndOfQueue());
+			}
 			if (isEndOfQueue) {
 				if (ConnectivityManagerUtils.isInternetAvailable(PlaybackService.this)) {
 					ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(PlaybackService.this);
@@ -2098,9 +2119,6 @@ public final class PlaybackService extends Service
 						});
 					});
 
-
-
-
 				} else {
 					//	Fallback to Album
 					// Write to Debug physical file
@@ -2111,6 +2129,9 @@ public final class PlaybackService extends Service
 					service.enqueueFromSong(service.mCurrentSong, MediaUtils.TYPE_ALBUM);
 					showToast("Offline Queuing Album", Toast.LENGTH_LONG);
 				}
+			}  // if is end of queue
+ 			else {
+				Log.d("VanillaICE", "## mTimeline Service is null");
 			}
 		}
 	}
@@ -2143,18 +2164,22 @@ public final class PlaybackService extends Service
 	public static PlaybackService get(Context context)
 	{
 		if (sInstance == null) {
-			context.startService(new Intent(context, PlaybackService.class));
-
-			while (sInstance == null) {
-				try {
-					synchronized (sWait) {
-						sWait.wait();
-					}
-				} catch (InterruptedException ignored) {
+			Intent intent = new Intent(context, PlaybackService.class);
+			ServiceConnection mConnection = new ServiceConnection() {
+				@Override
+				public void onServiceConnected(ComponentName name, IBinder service) {
+					PlaybackService.LocalBinder binder = (PlaybackService.LocalBinder) service;
+					sInstance = binder.getService();
+					// Here, you can use sInstance to interact with the service
 				}
-			}
-		}
 
+				@Override
+				public void onServiceDisconnected(ComponentName name) {
+					sInstance = null;
+				}
+			};
+			context.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		}
 		return sInstance;
 	}
 

@@ -227,6 +227,8 @@ public abstract class PlaybackActivity extends Activity
 			PlaybackService service = PlaybackService.get(this);
 			ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(service);
 			thirdPartyPlugins.send_downgrade_track();
+			setState(PlaybackService.get(this).setFinishAction(0));  // Force random off
+
 		//	cycleFinishAction();
 			break;
 		case R.id.shuffle:

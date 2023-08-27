@@ -28,6 +28,8 @@ import android.os.Build;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import ch.blinkenlights.android.plugin.ThirdPartyPlugins;
+
 public class VanillaMediaPlayer extends MediaPlayer {
 
 	private Context mContext;
@@ -70,6 +72,10 @@ public class VanillaMediaPlayer extends MediaPlayer {
 		// The MediaPlayer function expects a file:// like string but also accepts *most* absolute unix paths (= paths with no colon)
 		// We could therefore encode the path into a full URI, but a much quicker way is to simply use
 		// setDataSource(FileDescriptor) as the framework code would end up calling this function anyways (MediaPlayer.java:1100 (6.0))
+		// Write to Debug physical file
+		ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(mContext);
+		thirdPartyPlugins.appendLog("== 71setDataSource == " + path);
+		//
 		FileInputStream fis = new FileInputStream(path);
 		super.setDataSource(fis.getFD());
 		fis.close(); // this is OK according to the SDK documentation!
