@@ -5,7 +5,6 @@ import static ch.blinkenlights.android.plugin.ThirdParty.nuberu_url;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -66,8 +64,6 @@ public class ThirdPartyPlugins {
 	 * The default backoff multiplier
 	 */
 	public static final float DEFAULT_BACKOFF_MULTI = 0;
-	private String filePath;
-	private Handler mainHandler;
 
 	// Request a track using the now playing track as the seed track
 	// Gets called multiple times until track provided or fallback to album
@@ -108,6 +104,12 @@ public class ThirdPartyPlugins {
 				// Write to Debug physical file
 				ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(mContext);
 				thirdPartyPlugins.appendLog("<< IN << " + String.valueOf(response));
+				//
+
+				// Get Total Music Files as reported
+//				Integer total_music = getTotalMusicFiles(mContext);
+//				thirdPartyPlugins.appendLog("Android Library Reported; " + String.valueOf(total_music));
+//				Toast.makeText(mContext, "Android Library Reported;"+ String.valueOf(total_music), Toast.LENGTH_SHORT).show();
 				//
 
 				final String me_track;
@@ -236,7 +238,7 @@ public class ThirdPartyPlugins {
 
 	public void appendLog(String text)
 	{
-		final String log_output = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/vanillaICE.log";
+		final String log_output = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/vanillaICE.log";
 
 		File logFile = new File(log_output);
 		if (!logFile.exists())
@@ -323,6 +325,41 @@ public class ThirdPartyPlugins {
 		return -1; // File not found in MediaStore
 	}
 
+	/**
+	 * Get total number of music files stored on the device using the MediaStore content provider
+	 * @param context
+	 * @return integer
+	 */
+	public static int getTotalMusicFiles(Context context) {
+		int totalMusicFiles = 0;
+		if (context != null) {
+			ContentResolver contentResolver = context.getContentResolver();
+
+			// Define the columns to retrieve
+			String[] projection = {
+					MediaStore.Audio.Media._ID
+			};
+
+			// Define the selection criteria to filter music files (optional)
+			String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+
+			// Query the MediaStore to get music files
+			try (Cursor cursor = contentResolver.query(
+					MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+					projection,
+					selection,
+					null,
+					null
+			)) {
+				if (cursor != null) {
+					totalMusicFiles = cursor.getCount();
+				}
+			} catch (Exception e) {
+				Log.e("MusicUtils", "Error querying MediaStore for music files: " + e.getMessage());
+			}
+		}
+		return totalMusicFiles;
+	}
 
 
 

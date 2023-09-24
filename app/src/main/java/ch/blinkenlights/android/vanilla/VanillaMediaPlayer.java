@@ -169,7 +169,15 @@ public class VanillaMediaPlayer extends MediaPlayer {
 			volume *= mDuckingFactor;
 		}
 
-		setVolume(volume, volume);
+		// Stop any illegal volume setting
+		if (volume >= 0.0f && volume <= 1.0f) {
+			setVolume(volume, volume);
+		} else {
+			// Write to Debug physical file
+			ThirdPartyPlugins thirdPartyPlugins = new ThirdPartyPlugins(mContext);
+			thirdPartyPlugins.appendLog("Asked to Set Volume but was out of range: " + String.valueOf(volume));
+
+		}
 	}
 
 }

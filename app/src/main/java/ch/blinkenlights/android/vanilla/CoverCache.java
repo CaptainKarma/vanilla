@@ -234,7 +234,7 @@ public class CoverCache {
 		 * @param cacheSize The maximal amount of disk space to use in bytes
 		 */
 		public BitmapDiskCache(Context context, long cacheSize) {
-			super(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/vanilla-covercache.db", null, 1 /* version */);
+			super(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/vanilla-covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
 		}
 

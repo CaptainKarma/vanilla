@@ -69,14 +69,21 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import com.mobeta.android.dslv.ConnectivityManagerUtils;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.lang.Math;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -1408,7 +1415,7 @@ public final class PlaybackService extends Service
 	}
 
 	// Pause for SD Card mounting on Android Headunit
-	public void check_file_exists(String song) {
+	public boolean check_file_exists(String song) {
 		boolean mExternalStorageAvailable = false;
 		boolean mExternalStorageWriteable = false;
 		boolean mFile = false;
@@ -1453,8 +1460,8 @@ public final class PlaybackService extends Service
 				mFile = false;
 			}
 			count++;
-			if ((mExternalStorageAvailable == true && mExternalStorageWriteable == true && mFile == true)){
-				break;
+			if ((mExternalStorageAvailable && mExternalStorageWriteable && mFile)){
+				return true;   // The file exists, return true and exit
 			}
 		}
 
@@ -1462,18 +1469,20 @@ public final class PlaybackService extends Service
 		 	Log.e("VanillaICE", "External storage device not ready");
 		    showToast(R.string.not_working, Toast.LENGTH_SHORT);
 		}
+		return false; // The file doesn't exist, return false
+
 	}
 
 	private void processSong(Song song)
 	{
 		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
 		boolean playing = (mState & FLAG_PLAYING) != 0;
-
+		boolean file_does_exist = false;
 		try {
 			// Check external SDCard is mounted or wait
 			// This stops error messages on the display of the Android Headunit
 			//
-			check_file_exists(song.path);
+			file_does_exist = check_file_exists(song.path);
 
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
@@ -1487,6 +1496,8 @@ public final class PlaybackService extends Service
 				mPreparedMediaPlayer = tmpPlayer; // this was mMediaPlayer and is in reset() state
 			}
 			else {
+				// Write to Debug physical file
+				appendLog("Preparing with file check status: " + String.valueOf(file_does_exist));
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
 
@@ -2609,6 +2620,51 @@ public final class PlaybackService extends Service
 	 */
 	public void removeSongPosition(int which) {
 		mTimeline.removeSongPosition(which);
+	}
+
+	public void appendLog(String text)
+	{
+		final String log_output = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/vanillaICE.log";
+
+		File logFile = new File(log_output);
+		if (!logFile.exists())
+		{
+			try
+			{
+				logFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try
+		{
+			// Get the current date and time
+			Date currentDate = new Date();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(currentDate);
+
+			// Create a SimpleDateFormat instance with the desired format
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+			// Format the date and time objects into strings
+			String dateString = dateFormat.format(currentDate);
+			String timeString = timeFormat.format(calendar.getTime());
+
+			//BufferedWriter for performance, true to set append to file flag
+			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+			buf.append(dateString).append(String.valueOf(' ')).append(timeString).append(String.valueOf(' ')).append(text);
+			buf.newLine();
+			buf.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

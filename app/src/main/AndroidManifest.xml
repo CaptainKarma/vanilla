@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionName="Vanilla ICE 1.1"
-	android:versionCode="11"
+	android:versionName="Vanilla ICE 1.4"
+	android:versionCode="14"
 	android:installLocation="auto">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />

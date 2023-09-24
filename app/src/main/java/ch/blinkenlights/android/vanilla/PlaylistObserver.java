@@ -113,7 +113,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 
 
 	public PlaylistObserver(Context context, String folder, int mode, boolean exportRelativePaths) {
-		super(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/vanilla-playlist_observer.db", null, 1 /* version */);
+		super(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/vanilla-playlist_observer.db", null, 1 /* version */);
 		mContext = context;
 		mSyncMode = mode;
 		mPlaylists = new File(folder);

@@ -69,8 +69,8 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	* @param context the context to use
 	*/
 	MediaLibraryBackend(Context context) {
-		super(context,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME, null, DATABASE_VERSION);
-		final String my_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" +  DATABASE_NAME;
+		super(context,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/" +  DATABASE_NAME, null, DATABASE_VERSION);
+		final String my_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ice/" +  DATABASE_NAME;
 		Log.i("VanillaICE", "Database here;" + my_path);
 	}
 

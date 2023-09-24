@@ -17,6 +17,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import static ch.blinkenlights.android.plugin.ThirdPartyPlugins.getTotalMusicFiles;
+
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
 
@@ -61,6 +63,11 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * The progress bar
 	 */
 	private ProgressBar mProgressBar;
+	/**
+	 * The reported number of tracks on this device
+	 */;
+	private TextView mRStatsTracks;
+
 	/**
 	 * The number of tracks on this device
 	 */;
@@ -138,6 +145,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mEditButton = (View)view.findViewById(R.id.edit_button);
 		mProgressText = (TextView)view.findViewById(R.id.media_stats_progress_text);
 		mProgressBar = (ProgressBar)view.findViewById(R.id.media_stats_progress_bar);
+		mRStatsTracks = (TextView)view.findViewById(R.id.media_reported_stats_tracks);
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
 		mStatsLibraryPlaytime = (TextView)view.findViewById(R.id.media_stats_library_playtime);
 		mStatsListenPlaytime = (TextView)view.findViewById(R.id.media_stats_listen_playtime);
@@ -336,6 +344,9 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mCancelButton.setVisibility(idle ? View.GONE : View.VISIBLE);
 		mProgressText.setVisibility(idle ? View.GONE : View.VISIBLE);
 		mProgressBar.setVisibility(idle ? View.GONE : View.VISIBLE);
+
+		Integer total_music = getTotalMusicFiles(context);
+		mRStatsTracks.setText(total_music.toString());
 
 		Integer songCount = MediaLibrary.getLibrarySize(context);
 		mStatsTracks.setText(songCount.toString());

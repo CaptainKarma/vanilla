@@ -21,6 +21,7 @@ import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.NotificationHelper;
 
 import android.app.Notification;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -101,7 +102,7 @@ public class MediaScanner implements Handler.Callback {
 		mContext = context;
 		mBackend = backend;
 		mScanPlan = new MediaScanPlan();
-		HandlerThread handlerThread = new HandlerThread("MediaScannerThread", Process.THREAD_PRIORITY_LOWEST);
+		HandlerThread handlerThread = new HandlerThread("MediaScannerThread", Process.THREAD_PRIORITY_BACKGROUND);
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper(), this);
 		mWakeLock = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusic:Indexer");
