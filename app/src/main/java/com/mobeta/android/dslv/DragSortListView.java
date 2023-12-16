@@ -31,7 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
+//import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.Gravity;
@@ -49,7 +49,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ch.blinkenlights.android.vanilla.R;
+import uk.vanilla.android.vanilla.R;
 
 /**
  * ListView subclass that mediates drag and drop resorting of items.
@@ -643,7 +643,7 @@ public class DragSortListView extends ListView {
      * a heavily wrapped ListAdapter (DragSortListView wraps the
      * input ListAdapter {\emph and} ListView wraps the wrapped one).
      *
-     * @return The ListAdapter set as the argument of {@link setAdapter()}
+     * @return The ListAdapter set as the argument of {@link setAdapter}
      */
     public ListAdapter getInputAdapter() {
         if (mAdapterWrapper == null) {
@@ -859,8 +859,8 @@ public class DragSortListView extends ListView {
     }
 
     private void printPosData() {
-        Log.d("mobeta", "mSrcPos=" + mSrcPos + " mFirstExpPos=" + mFirstExpPos + " mSecondExpPos="
-                + mSecondExpPos);
+    //    Log.d("mobeta", "mSrcPos=" + mSrcPos + " mFirstExpPos=" + mFirstExpPos + " mSecondExpPos="
+      //          + mSecondExpPos);
     }
 
     private class HeightCache {
@@ -2986,10 +2986,10 @@ public class DragSortListView extends ListView {
             if (!mFile.exists()) {
                 try {
                     mFile.createNewFile();
-                    Log.d("mobeta", "file created");
+                //    Log.d("mobeta", "file created");
                 } catch (IOException e) {
-                    Log.w("mobeta", "Could not create dslv_state.txt");
-                    Log.d("mobeta", e.getMessage());
+                  //  Log.w("mobeta", "Could not create dslv_state.txt");
+                   // Log.d("mobeta", e.getMessage());
                 }
             }
 

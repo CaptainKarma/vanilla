@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:426787564754:android:2a82fdc1cefb9dd4aad10b",
         "android_client_info": {
-          "package_name": "ch.blinkenlights.android.vanilla"
+          "package_name": "uk.vanilla.android.vanilla"
         }
       },
       "oauth_client": [

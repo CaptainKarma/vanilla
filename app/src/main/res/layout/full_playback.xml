@@ -23,13 +23,13 @@ THE SOFTWARE.
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
 
-  <ch.blinkenlights.android.vanilla.CoverView
+  <uk.vanilla.android.vanilla.CoverView
       android:id="@+id/cover_view"
       android:layout_marginBottom="@dimen/full_playback_controls_height"
       android:layout_height="fill_parent"
       android:layout_width="fill_parent" />
 
-	<ch.blinkenlights.android.vanilla.SlidingView
+	<uk.vanilla.android.vanilla.SlidingView
 		android:id="@+id/sliding_view"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
@@ -50,11 +50,11 @@ THE SOFTWARE.
 			</LinearLayout>
 
 
-			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
+			<fragment class="uk.vanilla.android.vanilla.ShowQueueFragment"
 				android:id="@+id/queue"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent" />
-	</ch.blinkenlights.android.vanilla.SlidingView>
+	</uk.vanilla.android.vanilla.SlidingView>
 
 
 </merge>

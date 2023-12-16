@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionName="Vanilla ICE 1.4"
-	android:versionCode="14"
+	android:versionName="Vanilla ICE 1.8"
+	android:versionCode="18"
 	android:installLocation="auto">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -44,7 +44,7 @@ THE SOFTWARE.
 	<!-- Allow us to query plugins -->
 	<queries>
 		<intent>
-			<action android:name="ch.blinkenlights.android.vanilla.action.REQUEST_PLUGIN_PARAMS" />
+			<action android:name="uk.vanilla.android.vanilla.action.REQUEST_PLUGIN_PARAMS" />
 		</intent>
 	</queries>
 
@@ -61,7 +61,7 @@ THE SOFTWARE.
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
-			android:authorities="ch.blinkenlights.android.vanilla.fileprovider"
+			android:authorities="uk.vanilla.android.vanilla.fileprovider"
 			android:exported="false"
 			android:grantUriPermissions="true">
 			<meta-data
@@ -174,11 +174,11 @@ THE SOFTWARE.
 			 android:foregroundServiceType="mediaPlayback"
 			 android:exported="true">
 			<intent-filter>
-				<action android:name="ch.blinkenlights.android.vanilla.action.PLAY" />
-				<action android:name="ch.blinkenlights.android.vanilla.action.PAUSE" />
-				<action android:name="ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK" />
-				<action android:name="ch.blinkenlights.android.vanilla.action.NEXT_SONG" />
-				<action android:name="ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG" />
+				<action android:name="uk.vanilla.android.vanilla.action.PLAY" />
+				<action android:name="uk.vanilla.android.vanilla.action.PAUSE" />
+				<action android:name="uk.vanilla.android.vanilla.action.TOGGLE_PLAYBACK" />
+				<action android:name="uk.vanilla.android.vanilla.action.NEXT_SONG" />
+				<action android:name="uk.vanilla.android.vanilla.action.PREVIOUS_SONG" />
 			</intent-filter>
 		</service>
 
